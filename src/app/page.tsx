@@ -1,69 +1,224 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, type FormEvent } from "react";
+import Link from "next/link";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { TriggerRuleRow, type TriggerRule } from "@/components/TriggerRuleRow";
+
+export default function StudioPage() {
+  const [giftName, setGiftName] = useState("Rose");
+  const [stepBoost, setStepBoost] = useState("25");
+  const [chatCommand, setChatCommand] = useState("!jump");
+  const [savedNotice, setSavedNotice] = useState<string | null>(null);
+  const [rules, setRules] = useState<TriggerRule[]>([
+    {
+      id: 1,
+      kind: "Gift",
+      triggerName: "Rose",
+      actionSummary: "+25 Steps in 1,000-Step Obby",
+    },
+    {
+      id: 2,
+      kind: "Comment",
+      triggerName: "!jump",
+      actionSummary: "Triggers immediate jump boost",
+    },
+  ]);
+
+  function handleSaveStudio(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSavedNotice(
+      `Studio preset staged: "${giftName}" adds +${stepBoost || "0"} steps, and chat command "${chatCommand || "!jump"}" triggers a jump.`
+    );
+  }
+
+  function handleAddGiftRule() {
+    const cleanGift = giftName.trim() || "Rose";
+    const cleanSteps = stepBoost.trim() || "25";
+
+    const newRule: TriggerRule = {
+      id: Date.now(),
+      kind: "Gift",
+      triggerName: cleanGift,
+      actionSummary: `+${cleanSteps} Steps in 1,000-Step Obby`,
+    };
+
+    setRules((prev) => [newRule, ...prev]);
+    setSavedNotice(`Added gift rule for "${cleanGift}" (+${cleanSteps} steps).`);
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="flex min-h-screen flex-col justify-between bg-slate-950 text-slate-100">
+      <Navbar />
+
+      <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-14">
+        <div className="flex flex-col justify-between gap-4 border-b border-slate-800/80 pb-8 sm:flex-row sm:items-end">
+          <div>
+            <span className="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+              Game Studio
+            </span>
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              1,000-Step Obby Studio
+            </h1>
+            <p className="mt-2 text-sm text-slate-400">
+              Customize how TikTok LIVE gifts and chat commands interact with
+              your obstacle course.
+            </p>
+          </div>
+
+          <Link
+            href="/games"
+            className="inline-flex w-fit items-center rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-slate-500 hover:text-white"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Back to Games
+          </Link>
         </div>
-      </main>
-    </div>
+
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+          {/* Customization Form */}
+          <form
+            onSubmit={handleSaveStudio}
+            className="space-y-5 rounded-2xl border border-slate-800 bg-slate-900/70 p-6"
+          >
+            <h2 className="text-lg font-bold text-white">
+              Trigger Configuration
+            </h2>
+
+            <div>
+              <label
+                htmlFor="giftName"
+                className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+              >
+                TikTok Gift Trigger
+              </label>
+              <input
+                id="giftName"
+                type="text"
+                value={giftName}
+                onChange={(e) => setGiftName(e.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="stepBoost"
+                className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+              >
+                Steps Added Per Gift
+              </label>
+              <input
+                id="stepBoost"
+                type="number"
+                min="1"
+                max="500"
+                value={stepBoost}
+                onChange={(e) => setStepBoost(e.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="chatCommand"
+                className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
+              >
+                Chat Command Trigger
+              </label>
+              <input
+                id="chatCommand"
+                type="text"
+                value={chatCommand}
+                onChange={(e) => setChatCommand(e.target.value)}
+                className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
+              />
+            </div>
+
+            {savedNotice && (
+              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-200">
+                {savedNotice}
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                type="submit"
+                className="flex-1 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500"
+              >
+                Preview Studio Preset
+              </button>
+              <button
+                type="button"
+                onClick={handleAddGiftRule}
+                className="flex-1 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-4 py-2.5 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-500/20"
+              >
+                Add Gift Rule to List
+              </button>
+            </div>
+          </form>
+
+          {/* Live Preset Summary + Configured Rules */}
+          <div className="flex flex-col justify-between space-y-6 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
+                Live Preset Summary
+              </span>
+              <h2 className="mt-2 text-xl font-bold text-white">
+                1,000-Step Obby Ruleset
+              </h2>
+              <p className="mt-1 text-xs text-slate-400">
+                Updates live as you edit the fields on the left.
+              </p>
+
+              <div className="mt-5 space-y-2.5 text-sm">
+                <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-2.5">
+                  <span className="text-slate-400">Gift Event</span>
+                  <span className="font-semibold text-white">
+                    {giftName || "—"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-2.5">
+                  <span className="text-slate-400">Step Advance</span>
+                  <span className="font-semibold text-indigo-300">
+                    +{stepBoost || "0"} Steps
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-2.5">
+                  <span className="text-slate-400">Chat Keyword</span>
+                  <span className="font-mono text-cyan-300">
+                    {chatCommand || "—"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-white">
+                    Configured Trigger Rules
+                  </h3>
+                  <span className="font-mono text-xs text-slate-400">
+                    {rules.length} rules
+                  </span>
+                </div>
+
+                <div className="mt-3 space-y-2.5">
+                  {rules.map((rule) => (
+                    <TriggerRuleRow key={rule.id} rule={rule} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-800 pt-4 text-xs text-slate-500">
+              Database persistence via Supabase &amp; PostgreSQL connects in
+              Phase 3.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
   );
 }
