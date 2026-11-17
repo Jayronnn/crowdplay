@@ -1,167 +1,336 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import Sidebar from "@/components/Sidebar";
+
+const PREVIEW_LANES = [
+  { id: "p-1", positionClass: "left-[54%]", markerClass: "bg-[#7c5dfa] text-white" },
+  { id: "p-2", positionClass: "left-[35%]", markerClass: "bg-[#0ea5e9] text-white" },
+  { id: "p-3", positionClass: "left-[61%]", markerClass: "bg-[#10b981] text-white" },
+  { id: "p-4", positionClass: "left-[42%]", markerClass: "bg-[#d97706] text-white" },
+];
 
 export default function StudioPage() {
-  const [giftName, setGiftName] = useState("Rose");
-  const [stepBoost, setStepBoost] = useState("25");
-  const [chatCommand, setChatCommand] = useState("!jump");
-  const [savedNotice, setSavedNotice] = useState<string | null>(null);
-
-  function handleSaveStudio(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSavedNotice(
-      `Studio preset staged: "${giftName}" adds +${stepBoost || "0"} steps, and chat command "${chatCommand || "!jump"}" triggers a jump.`
-    );
-  }
+  const [sessionTitle, setSessionTitle] = useState("Friday Night Live");
+  const [roundDuration, setRoundDuration] = useState("5 minutes");
+  const [maxPlayers, setMaxPlayers] = useState("100 players");
+  const [pointsPerWin, setPointsPerWin] = useState("500 points");
+  const [joinWithComment, setJoinWithComment] = useState(true);
+  const [keepScoresBetweenRounds, setKeepScoresBetweenRounds] = useState(true);
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
 
   return (
-    <main className="flex min-h-screen flex-col justify-between bg-slate-950 text-slate-100">
-      <Navbar />
+    <div className="min-h-screen bg-[#09090f] text-slate-100 lg:grid lg:grid-cols-[232px_1fr]">
+      <Sidebar />
 
-      <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-14">
-        <div className="flex flex-col justify-between gap-4 border-b border-slate-800/80 pb-8 sm:flex-row sm:items-end">
-          <div>
-            <span className="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
-              Game Studio
+      <div className="flex min-w-0 flex-col">
+        {/* Top Bar */}
+        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-[#0b0b12] px-6 py-3">
+          <div className="flex items-center gap-2 text-xs text-slate-400">
+            <span>Workspace</span>
+            <span>/</span>
+            <span className="font-medium text-slate-200">Game studio</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="rounded-md border border-white/10 bg-[#13131d] px-2.5 py-1 text-[11px] text-slate-400">
+              Demo workspace
             </span>
-            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              1,000-Step Obby Studio
-            </h1>
-            <p className="mt-2 text-sm text-slate-400">
-              Customize how TikTok LIVE gifts and chat commands interact with
-              your obstacle course.
-            </p>
+            <span className="text-xs font-medium text-slate-200">
+              Alex Nova ⌄
+            </span>
           </div>
+        </header>
 
-          <Link
-            href="/games"
-            className="inline-flex w-fit items-center rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-slate-500 hover:text-white"
-          >
-            Back to Games
-          </Link>
-        </div>
-
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
-          {/* Customization Form */}
-          <form
-            onSubmit={handleSaveStudio}
-            className="space-y-5 rounded-2xl border border-slate-800 bg-slate-900/70 p-6"
-          >
-            <h2 className="text-lg font-bold text-white">
-              Trigger Configuration
-            </h2>
-
+        {/* Main Content */}
+        <main className="mx-auto w-full max-w-6xl space-y-5 px-6 py-7">
+          {/* Page Header */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <label
-                htmlFor="giftName"
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-              >
-                TikTok Gift Trigger
-              </label>
-              <input
-                id="giftName"
-                type="text"
-                value={giftName}
-                onChange={(e) => setGiftName(e.target.value)}
-                className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="stepBoost"
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-              >
-                Steps Added Per Gift
-              </label>
-              <input
-                id="stepBoost"
-                type="number"
-                min="1"
-                max="500"
-                value={stepBoost}
-                onChange={(e) => setStepBoost(e.target.value)}
-                className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="chatCommand"
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-300"
-              >
-                Chat Command Trigger
-              </label>
-              <input
-                id="chatCommand"
-                type="text"
-                value={chatCommand}
-                onChange={(e) => setChatCommand(e.target.value)}
-                className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none"
-              />
-            </div>
-
-            {savedNotice && (
-              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-200">
-                {savedNotice}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500"
-            >
-              Preview Studio Preset
-            </button>
-          </form>
-
-          {/* Live Preset Summary */}
-          <div className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
-                Live Preset Summary
-              </span>
-              <h2 className="mt-2 text-xl font-bold text-white">
-                1,000-Step Obby Ruleset
-              </h2>
-              <p className="mt-1 text-xs text-slate-400">
-                Updates live as you edit the fields on the left.
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8b76ff]">
+                CREATOR WORKSPACE
               </p>
-
-              <div className="mt-6 space-y-3 text-sm">
-                <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-3">
-                  <span className="text-slate-400">Gift Event</span>
-                  <span className="font-semibold text-white">
-                    {giftName || "—"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-3">
-                  <span className="text-slate-400">Step Advance</span>
-                  <span className="font-semibold text-indigo-300">
-                    +{stepBoost || "0"} Steps
-                  </span>
-                </div>
-                <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/80 px-4 py-3">
-                  <span className="text-slate-400">Chat Keyword</span>
-                  <span className="font-mono text-cyan-300">
-                    {chatCommand || "—"}
-                  </span>
-                </div>
-              </div>
+              <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-white">
+                Game studio
+              </h1>
+              <p className="mt-1 text-xs text-slate-400 sm:text-sm">
+                Make the rules. Create your signature live.
+              </p>
             </div>
 
-            <div className="mt-6 border-t border-slate-800 pt-4 text-xs text-slate-500">
-              Database persistence via Supabase & PostgreSQL connects in Phase 3.
+            <Link
+              href="/live-studio"
+              onClick={() =>
+                setStatusNotice("Saved studio configuration and opening Live studio.")
+              }
+              className="inline-flex items-center gap-2 rounded-lg bg-[#7c5dfa] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#6b4bf0]"
+            >
+              <span>Save &amp; open live studio</span>
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+
+          {/* Selected Game Banner */}
+          <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[#5a43b8]/35 bg-gradient-to-r from-[#231742] via-[#1a1230] to-[#141024] px-5 py-4">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#b9abff]">
+                GIFT RACE
+              </p>
+              <h2 className="mt-1 text-xl font-extrabold tracking-tight text-white">
+                Your next crowd favorite.
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Link
+                href="/games"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[#b9abff] transition hover:text-white"
+              >
+                <span>Change game</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+
+              <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-[11px] font-medium text-emerald-300">
+                All changes saved
+              </span>
+            </div>
+          </section>
+
+          {statusNotice && (
+            <div className="rounded-lg border border-[#7c5dfa]/40 bg-[#7c5dfa]/10 px-4 py-2.5 text-xs text-purple-100">
+              {statusNotice}
+            </div>
+          )}
+
+          {/* Two-Column Studio Grid */}
+          <div className="grid gap-5 lg:grid-cols-[1.55fr_1fr]">
+            {/* Left Column: Game Settings + Gameplay Rules + Rewards Header */}
+            <div className="space-y-5">
+              {/* Game settings */}
+              <section className="rounded-xl border border-white/10 bg-[#11111a] p-5">
+                <h2 className="text-sm font-bold text-white">Game settings</h2>
+
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor="sessionTitle"
+                      className="block text-xs font-medium text-slate-300"
+                    >
+                      Session title
+                    </label>
+                    <input
+                      id="sessionTitle"
+                      type="text"
+                      value={sessionTitle}
+                      onChange={(e) => {
+                        setSessionTitle(e.target.value);
+                        setStatusNotice(null);
+                      }}
+                      className="mt-2 w-full rounded-lg border border-white/10 bg-[#161622] px-3.5 py-2.5 text-xs text-white placeholder-slate-500 transition focus:border-[#7c5dfa] focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="roundDuration"
+                      className="block text-xs font-medium text-slate-300"
+                    >
+                      Round duration
+                    </label>
+                    <select
+                      id="roundDuration"
+                      value={roundDuration}
+                      onChange={(e) => {
+                        setRoundDuration(e.target.value);
+                        setStatusNotice(null);
+                      }}
+                      className="mt-2 w-full rounded-lg border border-white/10 bg-[#161622] px-3.5 py-2.5 text-xs text-white transition focus:border-[#7c5dfa] focus:outline-none"
+                    >
+                      <option value="3 minutes">3 minutes</option>
+                      <option value="5 minutes">5 minutes</option>
+                      <option value="10 minutes">10 minutes</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="maxPlayers"
+                      className="block text-xs font-medium text-slate-300"
+                    >
+                      Maximum players
+                    </label>
+                    <select
+                      id="maxPlayers"
+                      value={maxPlayers}
+                      onChange={(e) => {
+                        setMaxPlayers(e.target.value);
+                        setStatusNotice(null);
+                      }}
+                      className="mt-2 w-full rounded-lg border border-white/10 bg-[#161622] px-3.5 py-2.5 text-xs text-white transition focus:border-[#7c5dfa] focus:outline-none"
+                    >
+                      <option value="50 players">50 players</option>
+                      <option value="100 players">100 players</option>
+                      <option value="250 players">250 players</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="pointsPerWin"
+                      className="block text-xs font-medium text-slate-300"
+                    >
+                      Points per win
+                    </label>
+                    <input
+                      id="pointsPerWin"
+                      type="text"
+                      value={pointsPerWin}
+                      onChange={(e) => {
+                        setPointsPerWin(e.target.value);
+                        setStatusNotice(null);
+                      }}
+                      className="mt-2 w-full rounded-lg border border-white/10 bg-[#161622] px-3.5 py-2.5 text-xs text-white placeholder-slate-500 transition focus:border-[#7c5dfa] focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Gameplay rules */}
+              <section className="rounded-xl border border-white/10 bg-[#11111a] p-5">
+                <h2 className="text-sm font-bold text-white">Gameplay rules</h2>
+
+                <div className="mt-4 divide-y divide-white/10">
+                  <div className="flex items-center justify-between gap-4 pb-4">
+                    <div>
+                      <p className="text-xs font-semibold text-white">
+                        Join with a comment
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-slate-400">
+                        Viewers type !join to enter the next round.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={joinWithComment}
+                      onClick={() => {
+                        const next = !joinWithComment;
+                        setJoinWithComment(next);
+                        setStatusNotice(
+                          `Join with a comment ${next ? "enabled" : "disabled"} in studio UI.`
+                        );
+                      }}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition ${
+                        joinWithComment ? "bg-[#7c5dfa]" : "bg-white/15"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white transition ${
+                          joinWithComment ? "translate-x-5" : "translate-x-0.5"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 pt-4">
+                    <div>
+                      <p className="text-xs font-semibold text-white">
+                        Keep scores between rounds
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-slate-400">
+                        Build a leaderboard across your whole session.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={keepScoresBetweenRounds}
+                      onClick={() => {
+                        const next = !keepScoresBetweenRounds;
+                        setKeepScoresBetweenRounds(next);
+                        setStatusNotice(
+                          `Keep scores between rounds ${next ? "enabled" : "disabled"} in studio UI.`
+                        );
+                      }}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition ${
+                        keepScoresBetweenRounds ? "bg-[#7c5dfa]" : "bg-white/15"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white transition ${
+                          keepScoresBetweenRounds ? "translate-x-5" : "translate-x-0.5"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              {/* Gift & comment rewards */}
+              <section className="rounded-xl border border-white/10 bg-[#11111a] px-5 py-4">
+                <h2 className="text-sm font-bold text-white">
+                  Gift &amp; comment rewards
+                </h2>
+              </section>
+            </div>
+
+            {/* Right Column: Live preview + Test your triggers first */}
+            <div className="space-y-5">
+              <section className="rounded-xl border border-white/10 bg-[#11111a] p-5">
+                <h2 className="text-sm font-bold text-white">Live preview</h2>
+
+                <div className="mt-4 rounded-xl border border-white/5 bg-gradient-to-b from-[#171226] to-[#120e1f] px-5 py-7">
+                  <div className="space-y-5">
+                    {PREVIEW_LANES.map((lane) => (
+                      <div key={lane.id} className="relative h-px w-full bg-white/10">
+                        <span
+                          className={`absolute -top-2.5 ${lane.positionClass} flex h-5 w-7 items-center justify-center rounded text-[10px] font-bold shadow ${lane.markerClass}`}
+                        >
+                          »
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <h3 className="text-sm font-bold text-white">
+                    The crowd changes everything.
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-slate-400">
+                    Map gifts and comments to in-game actions. Your rules drive every round.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setStatusNotice(
+                      `Studio preview ready for "${sessionTitle}" (no game mechanics active yet).`
+                    )
+                  }
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-[#7c5dfa] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#6b4bf0]"
+                >
+                  <span>Launch game</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </section>
+
+              <section className="rounded-xl border border-[#5a43b8]/35 bg-gradient-to-br from-[#1b142e] to-[#11111a] p-5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8b76ff]">
+                  BEFORE YOU GO LIVE
+                </p>
+                <h2 className="mt-1.5 text-base font-bold text-white">
+                  Test your triggers first.
+                </h2>
+              </section>
             </div>
           </div>
-        </div>
-      </section>
-
-      <Footer />
-    </main>
+        </main>
+      </div>
+    </div>
   );
 }
